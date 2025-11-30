@@ -1,4 +1,7 @@
 {
   "extension.showEndpoint": "Copied to clipboard.",
-  "extension.copyEndpoint": "Endpoint copied to clipboard."
+  "extension.copyEndpoint": "Endpoint copied to clipboard.",
+  "extension.showPageUrl": "Page path copied to clipboard.",
+  "extension.copyPageUrl": "Page URL copied to clipboard.",
+  "codelens.copyUrl": "Copy URL"
 }

@@ -1,4 +1,7 @@
 {
   "extension.showEndpoint": "클립보드에 복사되었습니다.",
-  "extension.copyEndpoint": "엔드포인트가 클립보드에 복사되었습니다."
+  "extension.copyEndpoint": "엔드포인트가 클립보드에 복사되었습니다.",
+  "extension.showPageUrl": "페이지 경로가 클립보드에 복사되었습니다.",
+  "extension.copyPageUrl": "페이지 URL이 클립보드에 복사되었습니다.",
+  "codelens.copyUrl": "URL 복사"
 }

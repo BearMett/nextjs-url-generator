@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { getExtensionOptions } from "./options";
 import { parseExportedFunctions } from "./export-parser/export-parser";
 import { IPathResolver, NextjsPathResolver } from "./path-resolver";
+import { getMessage } from "./i18n/i18n";
 
 export class ApiEndpointCodeLensProvider implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
@@ -47,7 +48,7 @@ export class ApiEndpointCodeLensProvider implements vscode.CodeLensProvider {
   
         codeLenses.push(
           new vscode.CodeLens(range, {
-            title: "URL 복사",
+            title: getMessage("codelens.copyUrl"),
             command: "extension.copyEndpoint",
             arguments: [apiEndpoint],
           })

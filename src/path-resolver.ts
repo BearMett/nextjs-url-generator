@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 
 export interface IPathResolver {
     resolveApiPath(documentUri: vscode.Uri): string | undefined;
+    resolvePagePath(documentUri: vscode.Uri): string | undefined;
 }
 
 export class NextjsPathResolver implements IPathResolver {
@@ -25,13 +26,44 @@ export class NextjsPathResolver implements IPathResolver {
 
         return urlPath || undefined;
     }
+
+    resolvePagePath(documentUri: vscode.Uri): string | undefined {
+        if (!this.workspaceFolder) {
+            return undefined;
+        }
+
+        const fullPath = documentUri.fsPath;
+        const relativePath = path.relative(this.workspaceFolder.uri.fsPath, fullPath);
+        
+        // Only work with App Router (app/ directory)
+        if (!relativePath.includes("app/")) {
+            return undefined;
+        }
+
+        const appPath = relativePath.split("app/")[1];
+        
+        // Remove page.tsx, page.ts, page.jsx, page.js from the end
+        const pathWithoutPageFile = appPath.replace(/\/page\.(tsx?|jsx?)$/, '');
+        
+        // Handle root page (app/page.tsx -> /)
+        if (pathWithoutPageFile === '' || pathWithoutPageFile.match(/^page\.(tsx?|jsx?)$/)) {
+            return '/';
+        }
+        
+        // Return the path with leading slash
+        return `/${pathWithoutPageFile}`;
+    }
 }
 
 // 테스트를 위한 mock resolver
 export class MockPathResolver implements IPathResolver {
-    constructor(private mockPath: string) {}
+    constructor(private mockApiPath: string, private mockPagePath?: string) {}
 
     resolveApiPath(_documentUri: vscode.Uri): string {
-        return this.mockPath;
+        return this.mockApiPath;
+    }
+
+    resolvePagePath(_documentUri: vscode.Uri): string | undefined {
+        return this.mockPagePath;
     }
 }

@@ -5,3 +5,4 @@ node_modules
 *.vsix
 
 src/resources/test-resources/export-parser/defineHttpMethodTest.ts
+.DS_Store
