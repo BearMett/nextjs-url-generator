@@ -5,7 +5,7 @@
   "license": "MIT",
   "icon": "icon.png",
   "description": "Showing actual endpoint paths above HTTP method functions in Next.js API routes",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.93.0"
   },
