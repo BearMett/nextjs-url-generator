@@ -7,16 +7,23 @@ import { getMessage } from "./i18n/i18n";
 export class PageCodeLensProvider implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
-    private pathResolver: IPathResolver;
+    private pathResolverOverride?: IPathResolver;
 
     constructor(pathResolver?: IPathResolver) {
         vscode.workspace.onDidChangeConfiguration((_) => {
             this._onDidChangeCodeLenses.fire();
         });
 
-        const activeEditor = vscode.window.activeTextEditor;
-        const workspaceFolder = activeEditor ? vscode.workspace.getWorkspaceFolder(activeEditor.document.uri) : undefined;
-        this.pathResolver = pathResolver || new NextjsPathResolver(workspaceFolder);
+        // Store override for testing purposes only
+        this.pathResolverOverride = pathResolver;
+    }
+
+    private getPathResolver(document: vscode.TextDocument): IPathResolver {
+        if (this.pathResolverOverride) {
+            return this.pathResolverOverride;
+        }
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+        return new NextjsPathResolver(workspaceFolder);
     }
 
     public provideCodeLenses(
@@ -31,12 +38,13 @@ export class PageCodeLensProvider implements vscode.CodeLensProvider {
         }
 
         const defaultExport = parsePageDefaultExport(document.uri.fsPath);
-        
+
         if (!defaultExport) {
             return codeLenses;
         }
 
-        const urlPath = this.pathResolver.resolvePagePath(document.uri);
+        const pathResolver = this.getPathResolver(document);
+        const urlPath = pathResolver.resolvePagePath(document.uri);
         
         if (!urlPath) {
             console.error('[PageCodeLensProvider] Failed to resolve page path for:', document.uri.fsPath);
